@@ -5,20 +5,21 @@ import java.util.*;
 public class TreeTest {
     static AVLTree avl = new AVLTree();
     static RedBlackTree rbt = new RedBlackTree();
-    static BTree bt3 = new BTree(3);
     static BTree bt4 = new BTree(4);
     static BTree bt10 = new BTree(10);
-    static BPlusTree bpt3 = new BPlusTree(3);
+    static BTree bt100 = new BTree(100);
     static BPlusTree bpt4 = new BPlusTree(4);
     static BPlusTree bpt10 = new BPlusTree(10);
+    static BPlusTree bpt100 = new BPlusTree(100);
     static List<Integer> testset;
-    static long t_avl, t_rbt, t_bt3, t_bt4, t_bt10, t_bpt3, t_bpt4, t_bpt10; //time
+    static long t_avl, t_rbt, t_bt4, t_bt10, t_bt100, t_bpt4, t_bpt10, t_bpt100; //time
     static List<Long> sortlist;
     static Map<Long, String> sortmap;
     static int testsize;
     static int repeat;
-    static Map<String, Double> averagerank_insert;
-    static Map<String, Double> averagerank_search;
+    static Map<String, Double> averagetime_insert;
+    static Map<String, Double> averagetime_search;
+    static List<String> name;
 
     private static List<Integer> randomnum(int n) {
         Random random = new Random();
@@ -33,27 +34,14 @@ public class TreeTest {
     }
 
     private static void initrank() {
-        averagerank_insert = new HashMap<>(8);
+        averagetime_insert = new HashMap<>(8);
+        averagetime_search = new HashMap<>(8);
 
-        averagerank_insert.put("AVL", (double) 0);
-        averagerank_insert.put("RBt", (double) 0);
-        averagerank_insert.put("B(3)", (double) 0);
-        averagerank_insert.put("B(4)", (double) 0);
-        averagerank_insert.put("B(10)", (double) 0);
-        averagerank_insert.put("B+(3)", (double) 0);
-        averagerank_insert.put("B+(4)", (double) 0);
-        averagerank_insert.put("B+(10)", (double) 0);
+        for (String i: name) {
+            averagetime_insert.put(i, (double) 0);
 
-        averagerank_search = new HashMap<>(8);
-
-        averagerank_search.put("AVL", (double) 0);
-        averagerank_search.put("RBt", (double) 0);
-        averagerank_search.put("B(3)", (double) 0);
-        averagerank_search.put("B(4)", (double) 0);
-        averagerank_search.put("B(10)", (double) 0);
-        averagerank_search.put("B+(3)", (double) 0);
-        averagerank_search.put("B+(4)", (double) 0);
-        averagerank_search.put("B+(10)", (double) 0);
+            averagetime_search.put(i, (double) 0);
+        }
     }
 
     private static void insert(int i) {
@@ -68,7 +56,7 @@ public class TreeTest {
         etime = System.nanoTime();
         t_avl = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to AVL tree:            " + t_avl + " ns");
+            System.out.println("insert " + testsize + " nodes to AVL tree:             " + t_avl + " ns");
         }
 
         stime = System.nanoTime();
@@ -78,17 +66,7 @@ public class TreeTest {
         etime = System.nanoTime();
         t_rbt = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to RBtree:              " + t_rbt + " ns");
-        }
-
-        stime = System.nanoTime();
-        for (int iterator : testset) {
-            bt3.insert(iterator);
-        }
-        etime = System.nanoTime();
-        t_bt3 = etime - stime;
-        if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to 2-3 tree:            " + t_bt3 + " ns");
+            System.out.println("insert " + testsize + " nodes to RBtree:               " + t_rbt + " ns");
         }
 
         stime = System.nanoTime();
@@ -98,7 +76,7 @@ public class TreeTest {
         etime = System.nanoTime();
         t_bt4 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to 2-3-4 tree:          " + t_bt4 + " ns");
+            System.out.println("insert " + testsize + " nodes to B-tree of order 4:    " + t_bt4 + " ns");
         }
 
         stime = System.nanoTime();
@@ -108,17 +86,17 @@ public class TreeTest {
         etime = System.nanoTime();
         t_bt10 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to B-tree of order 10:  " + t_bt10 + " ns");
+            System.out.println("insert " + testsize + " nodes to B-tree of order 10:   " + t_bt10 + " ns");
         }
 
         stime = System.nanoTime();
         for (int iterator : testset) {
-            bpt3.insert(iterator, 0);
+            bt100.insert(iterator);
         }
         etime = System.nanoTime();
-        t_bpt3 = etime - stime;
+        t_bt100 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to B+ tree of order 3:  " + t_bpt3 + " ns");
+            System.out.println("insert " + testsize + " nodes to B-tree of order 100:  " + t_bt100 + " ns");
         }
 
         stime = System.nanoTime();
@@ -128,7 +106,7 @@ public class TreeTest {
         etime = System.nanoTime();
         t_bpt4 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to B+ tree of order 4:  " + t_bpt4 + " ns");
+            System.out.println("insert " + testsize + " nodes to B+ tree of order 4:   " + t_bpt4 + " ns");
         }
 
         stime = System.nanoTime();
@@ -138,7 +116,17 @@ public class TreeTest {
         etime = System.nanoTime();
         t_bpt10 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("insert " + testsize + " nodes to B+ tree of order 10: " + t_bpt10 + " ns");
+            System.out.println("insert " + testsize + " nodes to B+ tree of order 10:  " + t_bpt10 + " ns");
+        }
+
+        stime = System.nanoTime();
+        for (int iterator : testset) {
+            bpt100.insert(iterator, 0);
+        }
+        etime = System.nanoTime();
+        t_bpt100 = etime - stime;
+        if (i == repeat - 1) {
+            System.out.println("insert " + testsize + " nodes to B+ tree of order 100: " + t_bpt100 + " ns");
         }
     }
 
@@ -147,7 +135,7 @@ public class TreeTest {
             System.out.println("fast <------------insert------------> slow");
         }
         sortinit();
-        rank(i, averagerank_insert);
+        averagetime(i);
     }
 
     private static void search(int i) {
@@ -172,19 +160,11 @@ public class TreeTest {
         }
 
         stime = System.nanoTime();
-        bt3.search(searchnum);
-        etime = System.nanoTime();
-        t_bt3 = etime - stime;
-        if (i == repeat - 1) {
-            System.out.println("search in 2-3 tree:            " + t_bt3 + " ns");
-        }
-
-        stime = System.nanoTime();
         bt4.search(searchnum);
         etime = System.nanoTime();
         t_bt4 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("search in 2-3-4 tree:          " + t_bt4 + " ns");
+            System.out.println("search in B-tree of order 4:   " + t_bt4 + " ns");
         }
 
         stime = System.nanoTime();
@@ -196,11 +176,11 @@ public class TreeTest {
         }
 
         stime = System.nanoTime();
-        bpt3.search(searchnum);
+        bt100.search(searchnum);
         etime = System.nanoTime();
-        t_bpt3 = etime - stime;
+        t_bt100 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("search in B+tree of order 3:   " + t_bpt3 + " ns");
+            System.out.println("search in B-tree of order 100: " + t_bt100 + " ns");
         }
 
         stime = System.nanoTime();
@@ -216,7 +196,15 @@ public class TreeTest {
         etime = System.nanoTime();
         t_bpt10 = etime - stime;
         if (i == repeat - 1) {
-            System.out.println("search in B+tree of order 10:  " + t_bpt10 + " ns");
+            System.out.println("search in B+tree of order 10:   " + t_bpt10 + " ns");
+        }
+
+        stime = System.nanoTime();
+        bpt100.search(searchnum);
+        etime = System.nanoTime();
+        t_bpt100 = etime - stime;
+        if (i == repeat - 1) {
+            System.out.println("search in B+tree of order 100: " + t_bpt100 + " ns");
         }
     }
 
@@ -225,7 +213,7 @@ public class TreeTest {
             System.out.println("fast <------------search------------> slow");
         }
         sortinit();
-        rank(i, averagerank_search);
+        averagetime(i);
     }
 
     private static void sortinit() {
@@ -233,38 +221,32 @@ public class TreeTest {
 
         sortlist.add(t_avl);
         sortlist.add(t_rbt);
-        sortlist.add(t_bt3);
         sortlist.add(t_bt4);
         sortlist.add(t_bt10);
-        sortlist.add(t_bpt3);
+        sortlist.add(t_bt100);
         sortlist.add(t_bpt4);
         sortlist.add(t_bpt10);
+        sortlist.add(t_bpt100);
 
         sortmap = new HashMap<>(8);
 
         sortmap.put(t_avl, "AVL");
         sortmap.put(t_rbt, "RBt");
-        sortmap.put(t_bt3, "B(3)");
         sortmap.put(t_bt4, "B(4)");
         sortmap.put(t_bt10, "B(10)");
-        sortmap.put(t_bpt3, "B+(3)");
+        sortmap.put(t_bt100, "B(100)");
         sortmap.put(t_bpt4, "B+(4)");
         sortmap.put(t_bpt10, "B+(10)");
+        sortmap.put(t_bpt100, "B+(100)");
 
         Collections.sort(sortlist);
     }
 
-    private static void rank(int i, Map<String, Double> averagerank) {
+    private static void averagetime(int i) {
         String name;
-        int rank = 0;
+
         for (long iterator : sortlist) {
             name = sortmap.get(iterator);
-            rank++;
-            double currentrank = averagerank.get(name);
-            currentrank *= i;
-            currentrank += rank;
-            currentrank /= i + 1;
-            averagerank.replace(name, currentrank);
 
             if (i == repeat - 1) {
                 System.out.print(name + ' ');
@@ -275,7 +257,81 @@ public class TreeTest {
         }
     }
 
-    public static void main(String[] Args) {
+    private static void totaltime_insert() {
+        Double total;
+
+        total = averagetime_insert.get("AVL") + t_avl;
+        averagetime_insert.replace("AVL", total);
+
+        total = averagetime_insert.get("RBt") + t_rbt;
+        averagetime_insert.replace("RBt", total);
+
+        total = averagetime_insert.get("B(4)") + t_bt4;
+        averagetime_insert.replace("B(4)", total);
+
+        total = averagetime_insert.get("B(10)") + t_bt10;
+        averagetime_insert.replace("B(10)", total);
+
+        total = averagetime_insert.get("B(100)") + t_bt100;
+        averagetime_insert.replace("B(100)", total);
+
+        total = averagetime_insert.get("B+(4)") + t_bpt4;
+        averagetime_insert.replace("B+(4)", total);
+
+        total = averagetime_insert.get("B+(10)") + t_bpt10;
+        averagetime_insert.replace("B+(10)", total);
+
+        total = averagetime_insert.get("B+(100)") + t_bpt100;
+        averagetime_insert.replace("B+(100)", total);
+    }
+
+    private static void totaltime_search() {
+        Double total;
+
+        total = averagetime_search.get("AVL") + t_avl;
+        averagetime_search.replace("AVL", total);
+
+        total = averagetime_search.get("RBt") + t_rbt;
+        averagetime_search.replace("RBt", total);
+
+        total = averagetime_search.get("B(4)") + t_bt4;
+        averagetime_search.replace("B(4)", total);
+
+        total = averagetime_search.get("B(10)") + t_bt10;
+        averagetime_search.replace("B(10)", total);
+
+        total = averagetime_search.get("B(100)") + t_bt100;
+        averagetime_search.replace("B(100)", total);
+
+        total = averagetime_search.get("B+(4)") + t_bpt4;
+        averagetime_search.replace("B+(4)", total);
+
+        total = averagetime_search.get("B+(10)") + t_bpt10;
+        averagetime_search.replace("B+(10)", total);
+
+        total = averagetime_search.get("B+(100)") + t_bpt100;
+        averagetime_search.replace("B+(100)", total);
+    }
+
+    private static void timetoaverage() {
+        for (String i: name) {
+            averagetime_insert.replace(i, averagetime_insert.get(i) / repeat);
+
+            averagetime_search.replace(i, averagetime_insert.get(i) / repeat);
+        }
+    }
+
+    private static void test() {
+        name = new ArrayList<>(8);
+        name.add("AVL");
+        name.add("RBt");
+        name.add("B(4)");
+        name.add("B(10)");
+        name.add("B(100)");
+        name.add("B+(4)");
+        name.add("B+(10)");
+        name.add("B+(100)");
+
         repeat = 100;
 
         for (testsize = 10; testsize <= 1000000; testsize *= 10) {
@@ -285,23 +341,30 @@ public class TreeTest {
                 repeat = 20;
             }
             if (testsize == 1000000) {
-                repeat = 10;
+                repeat = 2;
             }
 
             for (int i = 0; i < repeat; i++) {
                 testset = randomnum(testsize);
                 insert(i);
+                totaltime_insert();
                 insertsort(i);
                 search(i);
+                totaltime_search();
                 searchsort(i);
             }
 
+            timetoaverage();
             System.out.println();
-            System.out.println("averagerank_insert:");
-            System.out.println(averagerank_insert.toString());
-            System.out.println("averagerank_search:");
-            System.out.println(averagerank_search.toString());
+            System.out.println("averagetime_insert:");
+            System.out.println(averagetime_insert.toString());
+            System.out.println("averagetime_search:");
+            System.out.println(averagetime_search.toString());
             System.out.println("-------------------------------------------------------------------------------------");
         }
+    }
+
+    public static void main(String[] Args) {
+        test();
     }
 }
